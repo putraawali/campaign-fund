@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
  
-pragma solidity 0.8.19;
+pragma solidity >=0.8.2 < 0.9.0;
 
-contract CampaignFactory {
-    address[] public deployedCampaign;
+contract Factory {
+    address[] public deployedCampaigns;
 
     function createCampaign(uint minimum) public {
        DonationCampaign newCampaign = new DonationCampaign(minimum, msg.sender);
-       deployedCampaign.push(address(newCampaign));
+       deployedCampaigns.push(address(newCampaign));
     }
 
     function getDeployedCampaigns() public view returns (address[] memory) {
-        return deployedCampaign;
+        return deployedCampaigns;
     }
 }
 
@@ -23,8 +23,9 @@ contract DonationCampaign {
         bool complete;
         bool isAccepted;
         uint approvalCount;
-        mapping(address => bool) approvals;
     }
+
+    mapping(uint => mapping(address => bool)) approvals;
 
     address public manager;
     uint public minimumContribution;
@@ -66,11 +67,12 @@ contract DonationCampaign {
     // Approve request that created before by the manager
     function approveRequest(uint requestIndex, bool accept) public {
         Request storage request = requests[requestIndex];
+        mapping (address => bool) storage approvalRequest = approvals[requestIndex];
 
         require(approvers[msg.sender], "You have to contribute first");
-        require(!request.approvals[msg.sender], "You already approve the request");
+        require(!approvalRequest[msg.sender], "You already approve the request");
 
-        request.approvals[msg.sender] = accept;
+        approvalRequest[msg.sender] = accept;
         request.approvalCount++;
     }
 
@@ -89,5 +91,9 @@ contract DonationCampaign {
         }
         
         request.complete = true;
+    }
+
+    function getRequests() public view returns (Request[] memory) {
+        return requests;
     }
 }

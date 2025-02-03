@@ -13,6 +13,10 @@ const input = {
         },
     },
     settings: {
+        optimizer: {
+            enabled: true,
+            runs: 200,
+        },
         outputSelection: {
             "*": {
                 "*": ["*"],
@@ -23,15 +27,12 @@ const input = {
 
 const output = JSON.parse(solc.compile(JSON.stringify(input)));
 
-const campaignFactoryContract =
-    output.contracts["Campaign.sol"]["CampaignFactory"];
-const campaignContract = output.contracts["Campaign.sol"]["DonationCampaign"];
+const contract = output.contracts["Campaign.sol"];
 
-const campaignFactoryBuildPath = path.resolve(
-    __dirname,
-    "build",
-    "CampaignFactory.json"
-);
+const factoryContract = contract["Factory"];
+const campaignContract = contract["DonationCampaign"];
+
+const factoryBuildPath = path.resolve(__dirname, "build", "Factory.json");
 const campaignBuildPath = path.resolve(__dirname, "build", "Campaign.json");
 
 if (!fs.existsSync(path.resolve(__dirname, "build"))) {
@@ -39,10 +40,10 @@ if (!fs.existsSync(path.resolve(__dirname, "build"))) {
 }
 
 fs.writeJsonSync(
-    campaignFactoryBuildPath,
+    factoryBuildPath,
     {
-        abi: campaignFactoryContract.abi,
-        evm: campaignFactoryContract.evm,
+        abi: factoryContract.abi,
+        evm: factoryContract.evm,
     },
     {
         spaces: 2,

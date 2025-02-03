@@ -1,20 +1,21 @@
 {
-    "name": "campaign-fund",
+    "name": "lotery-contract",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "mocha"
+        "test": "mocha",
+        "compile": "node ethereum/compile.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@truffle/hdwallet-provider": "^2.1.15",
         "dotenv": "^16.4.7",
-        "fs-extra": "^11.3.0",
         "ganache": "^7.9.2",
-        "mocha": "^11.1.0",
-        "solc": "^0.8.19",
-        "web3": "^4.16.0"
+        "mocha": "^10.4.0",
+        "solc": "^0.8.28",
+        "web3": "^4.9.0"
     }
 }
